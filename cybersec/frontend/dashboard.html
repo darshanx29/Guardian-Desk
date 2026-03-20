@@ -596,10 +596,28 @@ async function loadNetwork() {
           ${kv('Errors In/Out', io.errin+' / '+io.errout)}`)}
         ${card(`<h3 class="font-bold mb-4">Connection States</h3>
           ${Object.entries(d.connections_summary).map(([k,v])=>kv(k.charAt(0).toUpperCase()+k.slice(1).replace('_',' '),v)).join('')}`)}
-        ${card(`<h3 class="font-bold mb-4">Remote IPs (${d.devices.length})</h3>
-          ${d.devices.length===0 ? '<p class="text-slate-400 text-sm">No remote connections.</p>'
-            : d.devices.slice(0,20).map(dv=>`<div class="flex items-center gap-2 py-1 text-sm border-b border-slate-50 dark:border-slate-800">
-                <span class="material-symbols-outlined text-slate-400 !text-base">computer</span>${dv.ip}</div>`).join('')}`)}
+        ${card(`
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold">WiFi Devices</h3>
+            <span class="px-2 py-1 rounded-full text-xs font-black bg-primary/10 text-primary">${d.total_devices || d.devices.length} connected</span>
+          </div>
+          <p class="text-xs text-slate-400 mb-3">Subnet: ${d.subnet || 'unknown'}</p>
+          ${d.devices.length===0
+            ? '<p class="text-slate-400 text-sm">No devices found.</p>'
+            : d.devices.map(dv=>`
+              <div class="flex items-center gap-3 py-2 border-b border-slate-50 dark:border-slate-800">
+                <div class="flex h-7 w-7 items-center justify-center rounded-full ${dv.self ? 'bg-primary/20' : 'bg-slate-100 dark:bg-slate-800'} shrink-0">
+                  <span class="material-symbols-outlined text-sm ${dv.self ? 'text-primary' : 'text-slate-400'}">
+                    ${dv.self ? 'computer' : 'devices'}
+                  </span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-mono font-semibold text-slate-700 dark:text-slate-200">${dv.ip}</p>
+                  ${dv.hostname ? `<p class="text-xs text-slate-400 truncate">${dv.hostname}</p>` : ''}
+                </div>
+                ${dv.self ? '<span class="text-xs font-bold text-primary shrink-0">YOU</span>' : ''}
+              </div>`).join('')}
+        `)}
       </div>`;
   } catch(e) { el.innerHTML = `<p class="text-red-500">Error: ${e.message}</p>`; }
 }
