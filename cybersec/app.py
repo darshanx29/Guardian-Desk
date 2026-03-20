@@ -14,7 +14,6 @@ CORS(app)
 fim = FileIntegrityMonitor()
 
 # ─── Serve Frontend ───────────────────────────────────────────────────────────
-# front end started here
 
 
 @app.route('/')
